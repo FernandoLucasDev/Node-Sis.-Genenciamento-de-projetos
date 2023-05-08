@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <title>Entrar</title>
+</head>
+
+<style>
+    .nav{
+        width: 100%;
+        height: 3rem;
+        display: grid;
+        place-items: center;
+    }
+
+    .back {
+       width: 100%;
+       height: fit-content;
+       display: grid;
+       place-items: center;
+       padding: 2rem;
+    }
+
+    .add-btn {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+    }
+
+    .card1 {
+        width: 25rem;
+    }
+
+    .options {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .div-spendings {
+        width: 100%;
+    }
+</style>
+
+<body>
+    <nav>
+        <div class="nav bg-dark">
+            <h2 class="text-light">Sistema de gestão de projetos</h2>
+        </div>
+    </nav>
+    <div class="back">
+        <div class="card" style="max-width: 40rem;">
+            <div class="card-header">
+              
+              <p><%= userEmail %></p>
+            </div>
+            <div class="card-body">
+              <div class="options">
+                <button class="btn btn-danger m-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Deletar projeto</button>
+                <button class="btn btn-primary m-2" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Adicionar custo</button>
+              </div>
+              <h5 class="card-title"><%= project.project_name %></h5>
+              <p class="card-text"><%= project.project_description %></p>
+              <p class="text-end">Orçamento inicial:<h3 class="text-success text-end">R$<%= project.project_price %></h3></p>
+              <p class="text-end">Total gasto:<h3 class="text-warning text-end">R$<%= total %></h3></p>
+              <h5>Relatório de gastos:</h5>
+              <div class="div-spendings row">
+                <div class="col-sm-6 bg"><strong>Nome</strong></div>
+                <div class="col-sm-3 bg"><strong>Valor</strong></div>
+                <div class="col-sm-3 bg"><strong>Data</strong></div>
+              </div>
+              <% for (let spn of spendings) { %>
+                <div class="div-spendings row mb-3">
+                    <div class="col-sm-6 bg"><%= spn.spending_name %></div>
+                    <div class="col-sm-3 bg"><span class="text-warning">R$ <%= spn.spending_value %></span></div>
+                    <% var date = new Date(spn.spending_date); %>
+                    <div class="col-sm-3 bg"><%= date.toLocaleString() %></div>
+                </div>
+              <% } %>
+            </div>
+          </div>
+    </div>
+
+    <div class="add-btn bg-dark">
+        <i class="fa-solid fa-plus fa-xl" style="color: #ffffff;"></i>
+    </div>
+   
+    <footer>
+        <div class="nav bg-dark">
+            <p class="text-light">github.com/FernandoLucasDev</p>
+        </div>
+    </footer>
+
+    <section name="Modais">
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="exampleModalLabel">Deletar projeto - <%= project.project_name %></h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form method="post" action="/deleteproject">
+                    <input type="hidden" value="<%= project.id %>" name="id" id="id">
+                    <button type="submit" class="btn btn-danger w-100">Deletar Projeto </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Atualizar projeto - <%= project.project_name %></h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form action="post" method="/insertspending">
+                    <input class="form-label" type="hidden" value="<%= project.id %>" name="id" id="id">
+                    <label for="name">Nome do gasto:</label>
+                    <input class="form-control" type="text" name="name" id="name" placeholder="Nome do gasto">
+                    <label for="price" class="form-label">Valor do gasto:</label>
+                    <input class="form-control" type="number" name="price" id="price" placeholder="Valor do gasto">
+                    <button type="subm
+                    it" class="btn btn-primary w-100 mt-3">Adicionar</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+    </section>
+</body>
+</html>
