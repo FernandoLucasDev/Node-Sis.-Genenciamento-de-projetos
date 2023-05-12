@@ -11,3 +11,7 @@ Links uteis:
 [Documentação node](https://nodejs.org/en/docs)
 
 [MySQL2](https://www.npmjs.com/package/mysql2)
+
+Para executar o projeto, execute o seguinte comando no diretório raiz:
+
+$ nodemon app/app.js
